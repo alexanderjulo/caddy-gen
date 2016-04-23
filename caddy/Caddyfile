@@ -1,0 +1,4 @@
+test.julo.ch {
+    tls alexander@julo.ch
+    proxy / 172.17.0.2:80 
+}

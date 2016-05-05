@@ -8,6 +8,7 @@
     proxy / {{ range $container := $containers }}{{ $addrLen := len $container.Addresses }}{{ if eq $addrLen 1 }}{{ $address := index $container.Addresses 0 }}{{ template "proxy_to" (dict "Container" $container "Address" $address) }}{{ else }}{{ $port := coalesce $container.Env.VIRTUAL_PORT "80" }}{{ $address := where $container.Addresses "Port" $port | first }}{{ template "proxy_to" (dict "Container" $container "Address" $address) }}{{ end }} {{ end }} {
         proxy_header Host {host}
         proxy_header X-Real-IP {remote}
+        proxy_header X-Forwarded-For {remote}
         proxy_header X-Forwarded-Proto {scheme}
     }
 }

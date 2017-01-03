@@ -1,13 +1,14 @@
 FROM alpine:3.3
 MAINTAINER Alexander Jung-Loddenkemper <alexander@julo.ch>
 
-RUN echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-RUN apk add --no-cache tar ca-certificates bash docker
+ENV DG_VERSION 0.7.3
+ENV DG_URL https://github.com/jwilder/docker-gen/releases/download/$VERSION/docker-gen-alpine-linux-amd64-$DG_VERSION.tar.gz
 
-ENV DOCKER_GEN_VERSION 0.7.0
-RUN wget https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xvzf docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
-    && rm /docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz
+RUN apk add --no-cache ca-certificates && apk add --virtual deps wget tar
+
+RUN wget -qO- $DG_URL | tar xvz -C /usr/local/bin
+
+RUN apk del deps
 
 RUN mkdir -p /opt/caddy-gen /etc/caddy
 WORKDIR /opt/caddy-gen
